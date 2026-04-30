@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.prizmad/mcp-server",
   "title": "Prizmad",
-  "description": "Generate AI UGC video ads from any product URL. 50+ avatars, ElevenLabs voiceover, 8 caption styles, 9 music styles, 3 CTA styles, 10 image-style presets. OAuth 2.1 + Dynamic Client Registration ready (Claude Desktop, Claude.ai, ChatGPT, Cursor, Zed Connect button). 9 tools for picking templates, uploading images, kicking off renders, polling progress, listing past projects.",
+  "description": "Generate AI UGC video ads from any product URL — avatars, voiceover, OAuth Connect.",
   "version": "2.0.0",
   "websiteUrl": "https://prizmad.com",
   "repository": {
