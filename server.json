@@ -3,7 +3,7 @@
   "name": "com.prizmad/mcp-server",
   "title": "Prizmad",
   "description": "Generate AI UGC video ads from any product URL — avatars, voiceover, OAuth Connect.",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "websiteUrl": "https://prizmad.com",
   "repository": {
     "url": "https://github.com/prizmad/Prizmad-MCP-server",
@@ -13,7 +13,7 @@
     {
       "registryType": "npm",
       "identifier": "@prizmad/mcp-server",
-      "version": "2.0.1",
+      "version": "2.0.2",
       "transport": { "type": "stdio" },
       "environmentVariables": [
         {

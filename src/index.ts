@@ -140,6 +140,7 @@ server.tool(
   "list_templates",
   "List all available video ad templates with features, durations, and token costs. No API key required for this call.",
   {},
+  { title: "List Templates", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   async () => {
     const { ok, status, data } = await api("/api/v1/templates");
     return ok
@@ -153,6 +154,7 @@ server.tool(
   "list_avatars",
   "List all AI avatar presets with name, gender, age, image URL, and recommended voice ID. No API key required for this call.",
   {},
+  { title: "List Avatars", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   async () => {
     const { ok, status, data } = await api("/api/v1/avatars");
     return ok
@@ -203,6 +205,7 @@ server.tool(
         "Cap on token cost. Templates more expensive than this are filtered out."
       ),
   },
+  { title: "Recommend Template", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   async (params) => {
     const { ok, status, data } = await api("/api/v1/templates");
     if (!ok)
@@ -303,6 +306,7 @@ server.tool(
       .optional()
       .describe("Optional status filter."),
   },
+  { title: "List My Videos", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   async ({ limit, status }) => {
     const qs = new URLSearchParams();
     if (limit) qs.set("limit", String(limit));
@@ -347,6 +351,7 @@ server.tool(
         "MIME type for base64Data. Ignored when imageUrl is provided. Defaults to inference from the data URL prefix."
       ),
   },
+  { title: "Upload Image", readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
   async (params) => {
     if (!params.imageUrl && !params.base64Data) {
       return errorText("Provide either imageUrl or base64Data.");
@@ -506,6 +511,7 @@ server.tool(
         "Free-text hint for the music generator — e.g. 'epic cinematic trailer at 110 bpm', 'lo-fi beats with vinyl crackle'. Layered on top of musicStyle."
       ),
   },
+  { title: "Create Video", readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
   async (params) => {
     const body: Record<string, unknown> = {
       templateId: params.templateId,
@@ -565,6 +571,7 @@ server.tool(
         "When true, block until status is `completed` or `failed`. The server emits notifications/progress while waiting."
       ),
   },
+  { title: "Get Video Status", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   async ({ videoId, wait }, extra) => {
     if (!wait) {
       const { ok, status, data } = await api(`/api/v1/videos/${videoId}`);
@@ -641,6 +648,7 @@ server.tool(
   {
     videoId: z.string().uuid().describe("Video ID"),
   },
+  { title: "Get Download URL", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   async ({ videoId }) => {
     const { ok, status, data } = await api(`/api/v1/videos/${videoId}`);
     if (!ok) return errorText(`Error ${status}: ${JSON.stringify(data)}`);
@@ -742,6 +750,7 @@ server.tool(
       .optional()
       .describe("Webhook URL for completion notifications"),
   },
+  { title: "Create Video Batch", readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true },
   async ({ videos, callbackUrl }) => {
     const body = {
       videos: videos.map((v) => {
