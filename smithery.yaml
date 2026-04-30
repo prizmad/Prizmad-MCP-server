@@ -1,0 +1,40 @@
+# Smithery deployment manifest — registers Prizmad's remote MCP
+# server with smithery.ai. Smithery proxies traffic and handles
+# OAuth on its end; the actual server lives at prizmad.com/api/mcp.
+# Docs: https://smithery.ai/docs/build/publish
+
+runtime: "remote"
+url: "https://prizmad.com/api/mcp"
+transport: "streamable-http"
+description: |
+  Generate AI UGC video ads from any product URL. 50+ avatars,
+  ElevenLabs voiceover, multiple caption / music / CTA / image
+  styles, free-text prompt hints. OAuth 2.1 + Dynamic Client
+  Registration ready — works out of the box with Claude Desktop,
+  Claude.ai, ChatGPT, Cursor, Zed.
+icon: "https://prizmad.com/favicon-512.png"
+homepage: "https://prizmad.com"
+repository: "https://github.com/prizmad/Prizmad-MCP-server"
+license: "MIT"
+categories:
+  - ai
+  - video
+  - marketing
+  - ad-creative
+  - creative-tools
+keywords:
+  - mcp
+  - mcp-server
+  - model-context-protocol
+  - claude
+  - chatgpt-apps
+  - video-ads
+  - ugc-ads
+  - ai-avatars
+  - voiceover
+  - elevenlabs
+  - shopify
+  - amazon
+  - tiktok
+  - instagram-reels
+  - youtube-shorts

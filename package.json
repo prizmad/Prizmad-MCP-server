@@ -1,15 +1,35 @@
 {
   "name": "@prizmad/mcp-server",
   "version": "2.0.0",
-  "description": "MCP server for Prizmad — AI-powered UGC video ad generation. 9 tools (recommend_template, list_my_videos, upload_image, create_video with full customisation, get_video_status with live progress, …). OAuth 2.1 Connect flow for remote use; stdio bridge for local API-key flows.",
+  "description": "Model Context Protocol (MCP) server for Prizmad — generate AI UGC video ads from any product URL. Tools for recommend_template, upload_image, create_video, get_video_status (with live progress), create_video_batch, list_my_videos. OAuth 2.1 Connect flow for Claude Desktop / Claude.ai / ChatGPT / Cursor / Zed; stdio bridge for headless API-key flows.",
   "keywords": [
     "mcp",
+    "mcp-server",
     "model-context-protocol",
+    "claude",
+    "claude-mcp",
+    "anthropic",
+    "chatgpt-apps",
+    "ai-agents",
+    "remote-mcp",
+    "oauth",
     "prizmad",
     "ai",
-    "video",
-    "ads",
-    "ugc"
+    "ai-video",
+    "video-ads",
+    "video-generation",
+    "ugc",
+    "ugc-ads",
+    "ad-creative",
+    "ai-avatars",
+    "voiceover",
+    "elevenlabs",
+    "tiktok",
+    "instagram-reels",
+    "youtube-shorts",
+    "shopify",
+    "amazon",
+    "marketing"
   ],
   "license": "MIT",
   "author": "Prizmad <hello@prizmad.com> (https://prizmad.com)",
@@ -27,7 +47,12 @@
     "prizmad-mcp": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "server.json",
+    "smithery.yaml",
+    "PRIVACY.md",
+    "SECURITY.md",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc",

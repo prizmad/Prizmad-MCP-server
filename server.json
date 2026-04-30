@@ -1,0 +1,69 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.prizmad/mcp-server",
+  "title": "Prizmad",
+  "description": "Generate AI UGC video ads from any product URL. 50+ avatars, ElevenLabs voiceover, 8 caption styles, 9 music styles, 3 CTA styles, 10 image-style presets. OAuth 2.1 + Dynamic Client Registration ready (Claude Desktop, Claude.ai, ChatGPT, Cursor, Zed Connect button). 9 tools for picking templates, uploading images, kicking off renders, polling progress, listing past projects.",
+  "version": "2.0.0",
+  "websiteUrl": "https://prizmad.com",
+  "repository": {
+    "url": "https://github.com/prizmad/Prizmad-MCP-server",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@prizmad/mcp-server",
+      "version": "2.0.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "PRIZMAD_API_KEY",
+          "description": "Your Prizmad API key. Get one at https://prizmad.com/api-keys",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "PRIZMAD_BASE_URL",
+          "description": "Override base URL (defaults to https://prizmad.com).",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "https://prizmad.com"
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://prizmad.com/api/mcp"
+    }
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/icon": "https://prizmad.com/favicon-512.png",
+    "io.modelcontextprotocol.registry/categories": [
+      "ai",
+      "video",
+      "marketing",
+      "ad-creative",
+      "ugc",
+      "creative-tools"
+    ],
+    "io.modelcontextprotocol.registry/tags": [
+      "video-ads",
+      "ugc-ads",
+      "ai-avatars",
+      "voiceover",
+      "elevenlabs",
+      "shopify",
+      "amazon",
+      "tiktok",
+      "instagram-reels",
+      "youtube-shorts"
+    ],
+    "com.prizmad/serverCard": "https://prizmad.com/.well-known/mcp/server-card.json",
+    "com.prizmad/agentSkills": "https://prizmad.com/.well-known/agent-skills/index.json",
+    "com.prizmad/oauthAuthorizationServer": "https://prizmad.com/.well-known/oauth-authorization-server",
+    "com.prizmad/oauthProtectedResource": "https://prizmad.com/.well-known/oauth-protected-resource",
+    "com.prizmad/openapi": "https://prizmad.com/openapi.json"
+  }
+}

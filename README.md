@@ -1,20 +1,36 @@
 # Prizmad MCP Server
 
-Model Context Protocol server for [Prizmad](https://prizmad.com) — generate AI-powered UGC video ads from any product URL. 50+ avatars, ElevenLabs voiceover, 8 caption styles, 9 music styles, 3 CTA styles, 10 image-style presets, and free-text prompt hints across image, video and music.
+> **Generate AI UGC video ads from any product URL — straight from your AI agent.**
 
-This server lets AI agents (Claude Desktop, Claude.ai, ChatGPT, Cursor, Zed, Continue, custom MCP clients) drive the full Prizmad studio — pick a template, attach a product URL or images, customise the look, render, and hand back a brand-safe link.
+[![npm version](https://img.shields.io/npm/v/@prizmad/mcp-server.svg)](https://www.npmjs.com/package/@prizmad/mcp-server)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Model Context Protocol](https://img.shields.io/badge/Model%20Context%20Protocol-2025--06--18-blue)](https://modelcontextprotocol.io)
+[![Smithery](https://img.shields.io/badge/Smithery-Listed-purple)](https://smithery.ai/server/@prizmad/mcp-server)
 
-## Two ways to connect
+Model Context Protocol server for [Prizmad](https://prizmad.com). It turns any product URL — Amazon, Shopify, WooCommerce, custom store — into a platform-ready video ad in 3-8 minutes. **50+ avatars, ElevenLabs voiceover, 8 caption styles, 9 music styles, 3 CTA styles, 10 image-style presets, free-text prompt hints across image / video / music.** Output is 9:16 / 1:1 / 16:9 Full HD, ready for **TikTok, Instagram Reels, Facebook Ads, YouTube Shorts, Shopify, Amazon**. Full commercial rights included.
 
-### 1. Remote MCP (preferred — OAuth Connect, no install)
+This server is the agent-driver surface — pick a template, attach product images, customise the look, render, and hand back a brand-safe link. Works with **Claude Desktop, Claude.ai, ChatGPT, Cursor, Zed, Continue, n8n, custom MCP SDK clients**.
 
-Most modern MCP clients support a **Connect** flow that handles OAuth, Dynamic Client Registration and PKCE for you. Just:
+- **Remote MCP**: `https://prizmad.com/api/mcp`
+- **Transport**: streamable-http
+- **Auth**: OAuth 2.1 + PKCE + Dynamic Client Registration (the "Connect" button) **OR** API key Bearer **OR** OAuth client_credentials.
+- **npm**: `@prizmad/mcp-server`
 
-- **Add custom connector → URL: `https://prizmad.com/api/mcp`**
+---
 
-That's it. The browser opens, you sign in to Prizmad, click **Authorize**, and the connector is wired up. Refresh tokens rotate; you don't need to manage keys.
+## ⚡ Quickstart — pick your client
 
-Manual config (Claude Desktop / Cursor / Continue) for clients that need an explicit entry:
+### Claude Desktop / Claude.ai / ChatGPT / Cursor / Zed (Connect button)
+
+**Just add a custom connector with this URL** — the OAuth + DCR flow runs automatically, no install, no API key:
+
+```
+https://prizmad.com/api/mcp
+```
+
+In Claude Desktop: *Settings → Connectors → Add custom connector → URL: `https://prizmad.com/api/mcp`*. The browser opens, you sign in to Prizmad, click *Authorize*, the connector wires itself up.
+
+Manual config when needed:
 
 ```json
 {
@@ -27,7 +43,7 @@ Manual config (Claude Desktop / Cursor / Continue) for clients that need an expl
 }
 ```
 
-If your client cannot drive the OAuth flow, you can pre-fill an API key:
+For clients that can't drive OAuth, drop in an API key instead:
 
 ```json
 {
@@ -41,12 +57,7 @@ If your client cannot drive the OAuth flow, you can pre-fill an API key:
 }
 ```
 
-OAuth discovery: <https://prizmad.com/.well-known/oauth-authorization-server>
-Server card: <https://prizmad.com/.well-known/mcp/server-card.json>
-
-### 2. Local stdio bridge (`@prizmad/mcp-server`)
-
-For stdio-only clients or air-gapped environments. Uses an API key — no browser flow.
+### stdio bridge (`@prizmad/mcp-server`) — for stdio-only clients
 
 ```json
 {
@@ -77,70 +88,77 @@ npm install -g @prizmad/mcp-server
 }
 ```
 
-## Authentication options
+### `.cursor/mcp.json` snippet (project-scoped)
 
-| Method | When | Get it |
-|---|---|---|
-| **OAuth 2.1 Authorization Code + PKCE + DCR** | Interactive clients (the **Connect** button) | Automatic — no setup |
-| **API key (Bearer)** | Local stdio bridge, scripts, dev | <https://prizmad.com/api-keys> |
-| OAuth 2.0 client_credentials | Headless server-to-server (exchanges API key for short-lived JWT) | See [OAuth skill](https://prizmad.com/.well-known/agent-skills/oauth/SKILL.md) |
+```json
+{
+  "mcpServers": {
+    "prizmad": {
+      "url": "https://prizmad.com/api/mcp"
+    }
+  }
+}
+```
 
-API video generation requires a **Pro plan**. UI generation works on any plan; the Pro gate exists only on programmatic access.
+---
 
-## Available Tools
+## 🛠 Available tools
 
-| Tool | Auth | Purpose |
-|------|:----:|---------|
-| `list_templates` | No | Full template catalog with features and token costs |
-| `list_avatars` | No | Built-in avatar presets with recommended voices |
-| `recommend_template` | No | Pick top-3 templates from intent + voice/avatar/duration/budget constraints. Use this **before** `create_video` instead of guessing from the catalog. |
-| `list_my_videos` | Yes | Recent projects with projectUrl / shareUrl / downloadUrl |
-| `upload_image` | Yes | Upload an image (URL or base64) → returns prizmad.com-hosted URL for use as productImages or avatar reference |
-| `create_video` | Yes | Start a render. Returns `videoId`. Accepts caption/music/CTA/image style presets and free-text prompt hints. |
-| `get_video_status` | Yes | Snapshot status by default; with `wait: true` it blocks server-side and streams `notifications/progress` until terminal (up to 10 min) — preferred over polling. |
-| `get_download_url` | Yes | Authenticated download URL on prizmad.com for a completed video |
-| `create_video_batch` | Yes | Launch up to 20 renders in parallel; pre-checks total token cost |
+| Tool | Auth | What it does |
+|------|:----:|--------------|
+| `list_templates` | No | Full template catalog with features, durations, token costs. |
+| `list_avatars` | No | Built-in avatar presets with name, gender, age, recommended voice. |
+| `recommend_template` | No | Top-3 template suggestions from intent + voice / avatar / duration / budget constraints. **Use this before `create_video`** instead of guessing from the catalog. |
+| `list_my_videos` | Yes | Recent projects with `projectUrl` / `shareUrl` / `downloadUrl`. Find a videoId from a previous session, "remix my last video", etc. |
+| `upload_image` | Yes | Upload an image (URL or base64) — returns a prizmad.com-hosted URL ready for `productImages` or `avatarImageUrl`. |
+| `create_video` | Yes | Start a render. Returns `videoId`. Accepts caption / music / CTA / image style presets and free-text prompt hints. |
+| `get_video_status` | Yes | Snapshot status by default; `wait: true` blocks server-side and emits `notifications/progress` until terminal (up to 10 min) — preferred over polling. |
+| `get_download_url` | Yes | Authenticated download URL on prizmad.com for a completed video. |
+| `create_video_batch` | Yes | Launch 1-20 renders in parallel. Each item supports the **full** create_video parameter surface — perfect for A/B variant testing. |
 
-## Output URLs (what to give the user)
+## 🎨 Creative customisation on `create_video`
+
+Each is optional; omit any field for a randomised pick at render time.
+
+| Param | Values |
+|---|---|
+| `captionStyle` | `classic`, `bold-impact`, `karaoke`, `pop`, `bounce`, `neon`, `typewriter`, `glow` |
+| `musicStyle` | `energetic`, `friendly`, `professional`, `luxury`, `funny`, `cinematic`, `lo-fi`, `hip-hop`, `acoustic` |
+| `ctaStyle` | `classic`, `blurred-photo`, `dark-solid` |
+| `imageStyle` | `warm-golden`, `bright-neutral`, `cool-diffused`, `window-light`, `earthy-ambient`, `studio-clean`, `moody-dramatic`, `pastel-soft`, `nordic-minimal`, `sunset-warm` |
+| `imagePromptHint` | Free-text steer for AI creatives (≤ 400 chars). |
+| `videoPromptHint` | Free-text steer for AI product video clips. |
+| `musicPromptHint` | Free-text steer for the music generator. |
+| `language`, `tone`, `voiceId`, `avatarPresetId`, `duration`, `script` | Standard. |
+
+## 🔗 Output URLs (what to share with the user)
 
 Every status response carries three URL kinds, in priority order:
 
 | Field | Goes to |
 |---|---|
-| `projectUrl` | `https://prizmad.com/projects/<id>` — owner-only dashboard with player, remix, edit, asset library. **Primary link** when handing the result back to the signed-in user. |
-| `shareUrl` | `https://prizmad.com/share/<token>` — public share page. Use **only** when forwarding the video to someone *outside* the account. |
+| `projectUrl` | `https://prizmad.com/projects/<id>` — owner-only dashboard with player, remix, edit, asset library. **Primary link** for the signed-in user. |
+| `shareUrl` | `https://prizmad.com/share/<token>` — public share page. Use **only** when forwarding outside the account. |
 | `downloadUrl` | `https://prizmad.com/api/v1/videos/<id>/download` — authenticated mp4 stream proxied via prizmad.com. |
 
 The raw Vercel Blob URL is **never** surfaced to the agent.
 
-## Customization on `create_video`
+## 🔐 Authentication
 
-All optional. Omit any field for a randomised pick at render time.
+| Method | When | Get it |
+|---|---|---|
+| **OAuth 2.1 Authorization Code + PKCE + DCR** | Interactive clients (Connect button) | Automatic — no setup |
+| **API key (Bearer)** | Local stdio bridge, scripts, dev | <https://prizmad.com/api-keys> |
+| OAuth 2.0 client_credentials | Headless server-to-server | [oauth skill](https://prizmad.com/.well-known/agent-skills/oauth/SKILL.md) |
 
-### `captionStyle` — on-video subtitles
+API video generation requires a **Pro plan**. UI generation works on any plan; the Pro gate exists only on programmatic access.
 
-`classic`, `bold-impact`, `karaoke`, `pop`, `bounce`, `neon`, `typewriter`, `glow`. See the [MCP skill](https://prizmad.com/.well-known/agent-skills/mcp-server/SKILL.md) for visual previews.
-
-### `musicStyle`
-
-`energetic`, `friendly`, `professional`, `luxury`, `funny`, `cinematic`, `lo-fi`, `hip-hop`, `acoustic`.
-
-### `ctaStyle` — end card
-
-`classic`, `blurred-photo`, `dark-solid`.
-
-### `imageStyle` — lighting/palette
-
-`warm-golden`, `bright-neutral`, `cool-diffused`, `window-light`, `earthy-ambient`, `studio-clean`, `moody-dramatic`, `pastel-soft`, `nordic-minimal`, `sunset-warm`.
-
-### Free-text prompt hints (≤ 400 chars each)
-
-`imagePromptHint`, `videoPromptHint`, `musicPromptHint` — layered on top of the corresponding style preset.
-
-## Typical agent flow
+## 🧠 Typical agent workflow
 
 ```text
-recommend_template ─► create_video ─► get_video_status (wait: true) ─► projectUrl + downloadUrl
+recommend_template ─► (optional upload_image) ─► create_video
+                                                  └─► get_video_status (wait: true)
+                                                           └─► projectUrl + downloadUrl
 ```
 
 Once connected you can ask your agent things like:
@@ -148,38 +166,36 @@ Once connected you can ask your agent things like:
 > "Make a 30-second energetic showcase ad for this Amazon product:
 > https://amazon.com/dp/B0EXAMPLE — moody-dramatic look, cinematic music."
 
-The agent will:
-1. Call `recommend_template` to pick a fitting template.
-2. Call `create_video` with the URL + style hints. Returns `videoId`.
-3. Call `get_video_status({ videoId, wait: true })` — blocks server-side, streams progress notifications, returns the final payload (3–8 minutes typical).
-4. Hand `projectUrl` back so you land on your dashboard with the player, remix and download.
+The agent will pick a template, drop in the URL with the style hints, kick off the render, wait through the live progress notifications, and hand back a `https://prizmad.com/projects/<id>` link.
 
-For bulk campaigns use `create_video_batch` (1–20 per request).
+## 🌐 Discovery & metadata
 
-## Plan + token rules
+- **Server card**: <https://prizmad.com/.well-known/mcp/server-card.json>
+- **OAuth metadata**: <https://prizmad.com/.well-known/oauth-authorization-server>
+- **Protected resource metadata** (RFC 9728): <https://prizmad.com/.well-known/oauth-protected-resource>
+- **JWKS**: <https://prizmad.com/.well-known/jwks.json>
+- **Agent skills index**: <https://prizmad.com/.well-known/agent-skills/index.json>
+- **OpenAPI**: <https://prizmad.com/openapi.json>
+- **API catalog (RFC 9727)**: <https://prizmad.com/.well-known/api-catalog>
 
-- API generation requires a **Pro plan** (`/api/v1/videos` returns 403 with an upgrade message otherwise).
-- Tokens come from the user's monthly plan first, then any top-up balance.
-- Insufficient balance returns 402 with `required`, `balance`, and `topUpUrl`.
-- The MCP layer renders both errors as plain English so the assistant can repeat them verbatim.
-
-## Environment variables (stdio bridge only)
+## 📦 Environment variables (stdio bridge only)
 
 | Variable | Required | Description |
-|----------|:--------:|-------------|
+|---|:---:|---|
 | `PRIZMAD_API_KEY` | Yes | Your Prizmad API key |
-| `PRIZMAD_BASE_URL` | No | API base URL (default: `https://prizmad.com`) |
+| `PRIZMAD_BASE_URL` | No | API base URL (default `https://prizmad.com`) |
 
-## Resources
+## 📚 Resources
 
 - [Prizmad](https://prizmad.com) — Main site
-- [API documentation](https://prizmad.com/api/docs) — Interactive API docs
-- [OpenAPI spec](https://prizmad.com/openapi.json) — Machine-readable spec
-- [MCP server card](https://prizmad.com/.well-known/mcp/server-card.json) — Discovery metadata
-- [OAuth metadata](https://prizmad.com/.well-known/oauth-authorization-server) — OAuth 2.0 / 2.1 discovery
-- [Protected resource metadata](https://prizmad.com/.well-known/oauth-protected-resource) — RFC 9728
-- [JWKS](https://prizmad.com/.well-known/jwks.json) — Public keys for verifying RS256 access tokens
-- [Agent skills index](https://prizmad.com/.well-known/agent-skills/index.json) — All published skills
+- [API documentation](https://prizmad.com/api/docs) — Interactive API docs (Scalar)
+- [MCP server skill](https://prizmad.com/.well-known/agent-skills/mcp-server/SKILL.md) — full agent-facing reference
+- [OAuth skill](https://prizmad.com/.well-known/agent-skills/oauth/SKILL.md) — three auth flows in detail
+- [Privacy policy](./PRIVACY.md) · [Security policy](./SECURITY.md)
+
+## 🏷 Topics / categories
+
+`mcp` · `mcp-server` · `model-context-protocol` · `claude` · `chatgpt-apps` · `ai-agents` · `oauth` · `remote-mcp` · `ai-video` · `video-ads` · `ugc-ads` · `ad-creative` · `ai-avatars` · `voiceover` · `elevenlabs` · `tiktok` · `instagram-reels` · `youtube-shorts` · `shopify` · `amazon` · `marketing`
 
 ## License
 
